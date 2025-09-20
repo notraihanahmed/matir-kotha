@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tek-Shutki</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-light': '#EBEDDF',
+                        'brand-dark': '#333A2F',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #EBEDDF;
+        }
+        .dark body {
+             background-color: #333A2F;
+        }
+        .hero-section {
+            background-image: url('https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=2070&auto-format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+        }
+        .product-card .carousel-buttons {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .product-card:hover .carousel-buttons {
+            opacity: 1;
+        }
+        .product-card .add-to-cart-button-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .product-card:hover .add-to-cart-button-container {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .carousel-button {
+             background-color: rgba(255, 255, 255, 0.7);
+             border-radius: 50%;
+             width: 2rem;
+             height: 2rem;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+        }
+         .carousel-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+        .dark .carousel-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #EBEDDF;
+        }
+        .dark .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        #cart-modal, #search-overlay {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .cart-item-quantity button {
+            width: 28px;
+            height: 28px;
+        }
+    </style>
+</head>
+<body class="bg-brand-light text-brand-dark transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-brand-light bg-opacity-80 dark:bg-brand-dark dark:bg-opacity-80 backdrop-blur-md z-50 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-2xl font-bold text-brand-dark dark:text-brand-light">
+                        <i class="fas fa-bolt"></i> Tek-Shutki
+                    </a>
+                </div>
+                <div class="flex items-center space-x-5">
+                     <button id="theme-toggle" class="text-brand-dark dark:text-brand-light hover:text-gray-900 dark:hover:text-white">
+                        <i id="theme-icon" class="fas fa-moon text-xl"></i>
+                    </button>
+                    <button id="search-button" class="text-brand-dark dark:text-brand-light hover:text-gray-900 dark:hover:text-white">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </button>
+                    <button id="cart-button" class="text-brand-dark dark:text-brand-light hover:text-gray-900 dark:hover:text-white relative">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-brand-dark text-brand-light text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 pt-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <input type="text" id="search-input" placeholder="Search for products..." class="w-full p-4 text-lg rounded-md shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-dark dark:focus:ring-brand-light bg-brand-light dark:bg-gray-800 dark:text-brand-light">
+        </div>
+    </div>
+
+
+    <main>
+        <!-- ... existing main content ... -->
+        <!-- Hero Section -->
+        <section class="hero-section h-screen flex items-center justify-center text-white pt-20">
+            <div class="bg-black bg-opacity-50 p-12 rounded-lg text-center backdrop-blur-sm max-w-4xl mx-4">
+                <h1 class="text-5xl md:text-7xl font-black mb-4 leading-tight">Beyond Performance. <br> Into The Future.</h1>
+                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">Discover our new collection, engineered for the modern athlete. Uncompromised style, unparalleled comfort.</p>
+                <div class="flex justify-center space-x-4">
+                    <button class="bg-brand-dark hover:bg-opacity-90 text-brand-light font-bold py-3 px-8 rounded-lg transition duration-300 dark:bg-brand-light dark:text-brand-dark dark:hover:bg-opacity-90">
+                        Shop Now <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                    <button class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-3 px-8 rounded-lg transition duration-300 border border-white">
+                        Explore Collection
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Drops Section -->
+        <section class="py-20 bg-gray-50 dark:bg-brand-dark dark:bg-opacity-40">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-center text-brand-dark dark:text-brand-light mb-4">Our Products</h2>
+                <p class="text-center text-gray-500 dark:text-gray-300 mb-12">Explore our collection of high-performance footwear.</p>
+                <div id="latest-drops" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <!-- Product cards will be injected here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <!-- ... existing footer ... -->
+    <footer class="bg-brand-dark text-brand-light">
+        <div class="container mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                <div class="col-span-2 md:col-span-4 lg:col-span-1">
+                    <h3 class="text-xl font-bold mb-4"><i class="fas fa-bolt"></i> Tek-Shutki</h3>
+                    <p class="text-gray-300">Elevate your every step.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">PRODUCTS</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Running</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Lifestyle</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Trail</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Classics</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">SUPPORT</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Shipping</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Returns</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">COMPANY</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Press</a></li>
+                    </ul>
+                </div>
+                 <div class="col-span-2 md:col-span-1">
+                    <h4 class="font-semibold text-lg mb-4">FOLLOW US</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-600 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Tek-Shutki. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end">
+        <div class="bg-brand-light dark:bg-brand-dark w-full md:w-1/2 lg:w-1/3 h-full shadow-lg flex flex-col">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-bold text-brand-dark dark:text-brand-light">Your Cart</h2>
+                <button id="close-cart-button" class="text-brand-dark dark:text-brand-light text-2xl font-bold">&times;</button>
+            </div>
+            <div id="cart-items" class="flex-grow p-6 overflow-y-auto">
+                <!-- Cart items will be injected here -->
+                <p class="text-gray-500 dark:text-gray-400">Your cart is empty.</p>
+            </div>
+            <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xl font-medium text-brand-dark dark:text-brand-light">Subtotal</span>
+                    <span id="cart-subtotal" class="text-2xl font-bold text-brand-dark dark:text-brand-light">$0.00</span>
+                </div>
+                <button class="w-full bg-brand-dark hover:bg-opacity-90 text-brand-light dark:bg-brand-light dark:text-brand-dark dark:hover:bg-opacity-90 font-bold py-3 rounded-lg transition duration-300">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const products = [
+             {
+                id: 1,
+                name: 'Aura-Flex TR',
+                description: 'A fusion of responsive cushioning and featherlight design for the urban explorer.',
+                price: 130.00,
+                images: [
+                    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1579338559194-a162d19bf842?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                ]
+            },
+            {
+                id: 2,
+                name: 'Velocity-Edge Runner',
+                description: 'Engineered for speed, this shoe offers maximum energy return and a propulsive feel.',
+                price: 155.00,
+                images: [
+                    'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                ]
+            },
+            {
+                id: 3,
+                name: 'Zenith-Stride Lo',
+                description: 'A minimalist sneaker that combines everyday comfort with a sleek, modern aesthetic.',
+                price: 110.00,
+                images: [
+                    'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1898&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                ]
+            },
+             {
+                id: 4,
+                name: 'Apex-Trail XT',
+                description: 'Conquer any terrain with this rugged trail shoe, featuring superior grip and stability.',
+                price: 140.00,
+                images: [
+                    'https://images.unsplash.com/photo-1562183241-b937e95585b6?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                ]
+            },
+            {
+                id: 5,
+                name: 'React-Charge Pro',
+                description: 'Dominate the court with explosive responsiveness and a locked-in, supportive fit.',
+                price: 180.00,
+                images: [
+                    'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1605348532760-6753d2c43329?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1603808033192-082d6919d3e1?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                ]
+            },
+            {
+                id: 6,
+                name: 'Heritage-Court Classic',
+                description: 'A timeless silhouette, crafted from premium materials for a sophisticated look and feel.',
+                price: 125.00,
+                images: [
+                    'https://images.unsplash.com/photo-1608231387042-8a81e9768d8c?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1597045566677-8cf032ed6634?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    'https://images.unsplash.com/photo-1612821745127-53855be9cbd1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                ]
+            }
+        ];
+
+        let cart = [];
+        const latestDropsContainer = document.getElementById('latest-drops');
+
+        function createProductCard(product) {
+            return `
+                <div class="product-card bg-brand-light dark:bg-gray-800 rounded-lg shadow-md overflow-hidden group">
+                    <div class="relative overflow-hidden">
+                        <div class="flex transition-transform duration-300 ease-in-out" id="carousel-${product.id}">
+                            ${product.images.map(image => `
+                                <img src="${image}" alt="${product.name}" class="w-full h-80 object-cover flex-shrink-0">
+                            `).join('')}
+                        </div>
+                        <div class="carousel-buttons absolute inset-0 flex items-center justify-between px-4">
+                            <button onclick="prevImage(${product.id})" class="carousel-button text-gray-800 hover:text-black">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button onclick="nextImage(${product.id})" class="carousel-button text-gray-800 hover:text-black">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6 relative">
+                        <h3 class="text-xl font-bold text-brand-dark dark:text-brand-light mb-2">${product.name}</h3>
+                        <p class="text-gray-500 dark:text-gray-400 mb-4 h-12">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-brand-dark dark:text-brand-light">$${product.price.toFixed(2)}</span>
+                            <div class="add-to-cart-button-container">
+                                 <button onclick="addToCart(${product.id})" class="bg-brand-dark text-brand-light py-2 px-5 rounded-lg font-semibold hover:bg-opacity-90 dark:bg-brand-light dark:text-brand-dark dark:hover:bg-opacity-90 transition-colors duration-300 flex items-center">
+                                    <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderProducts(filter = '') {
+            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
+            latestDropsContainer.innerHTML = '';
+            
+            if (filteredProducts.length === 0) {
+                latestDropsContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 col-span-3">No products found matching your search.</p>';
+                return;
+            }
+
+            filteredProducts.forEach(product => latestDropsContainer.innerHTML += createProductCard(product));
+        }
+
+
+        // Cart functions
+        const cartModal = document.getElementById('cart-modal');
+        const cartButton = document.getElementById('cart-button');
+        const closeCartButton = document.getElementById('close-cart-button');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartSubtotal = document.getElementById('cart-subtotal');
+        
+        function toggleCart() {
+            cartModal.classList.toggle('hidden');
+        }
+
+        cartButton.addEventListener('click', toggleCart);
+        closeCartButton.addEventListener('click', toggleCart);
+        
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            renderCart();
+        }
+
+        function updateQuantity(productId, newQuantity) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                if (newQuantity > 0) {
+                    item.quantity = newQuantity;
+                } else {
+                    cart = cart.filter(cartItem => cartItem.id !== productId);
+                }
+            }
+            renderCart();
+        }
+        
+        function renderCart() {
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Your cart is empty.</p>';
+            } else {
+                cartItemsContainer.innerHTML = cart.map(item => `
+                    <div class="flex items-center justify-between mb-4 border-b pb-4 border-gray-200 dark:border-gray-700">
+                        <img src="${item.images[0]}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md">
+                        <div class="flex-grow mx-4">
+                            <p class="font-bold text-brand-dark dark:text-brand-light">${item.name}</p>
+                            <p class="text-gray-600 dark:text-gray-400">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="cart-item-quantity flex items-center border rounded border-gray-300 dark:border-gray-600">
+                                <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})" class="text-brand-dark dark:text-brand-light hover:bg-gray-100 dark:hover:bg-gray-700">-</button>
+                                <span class="px-3 text-brand-dark dark:text-brand-light">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})" class="text-brand-dark dark:text-brand-light hover:bg-gray-100 dark:hover:bg-gray-700">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            
+            cartCount.textContent = totalItems;
+            cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+        }
+
+        // Search functions
+        const searchButton = document.getElementById('search-button');
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('search-input');
+
+        searchButton.addEventListener('click', () => {
+            searchOverlay.classList.toggle('hidden');
+            if (!searchOverlay.classList.contains('hidden')) {
+                searchInput.focus();
+            }
+        });
+        
+        searchInput.addEventListener('input', (e) => {
+            renderProducts(e.target.value);
+        });
+
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlEl = document.documentElement;
+
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          htmlEl.classList.add('dark');
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+        } else {
+          htmlEl.classList.remove('dark');
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-moon');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark');
+            if(htmlEl.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+
+        // Initial Render
+        let currentImageIndices = {};
+        products.forEach(p => currentImageIndices[p.id] = 0);
+
+        function updateCarousel(productId) {
+            const carousel = document.getElementById(`carousel-${productId}`);
+            if (carousel) {
+                const offset = -currentImageIndices[productId] * 100;
+                carousel.style.transform = `translateX(${offset}%)`;
+            }
+        }
+
+        function nextImage(productId) {
+            const product = products.find(p => p.id === productId);
+            currentImageIndices[productId] = (currentImageIndices[productId] + 1) % product.images.length;
+            updateCarousel(productId);
+        }
+
+        function prevImage(productId) {
+            const product = products.find(p => p.id === productId);
+            currentImageIndices[productId] = (currentImageIndices[productId] - 1 + product.images.length) % product.images.length;
+            updateCarousel(productId);
+        }
+
+        renderProducts();
+        renderCart();
+
+    </script>
+</body>
+</html>
+
+
