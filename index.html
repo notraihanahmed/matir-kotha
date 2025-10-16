@@ -80,10 +80,12 @@
                 </div>
                 <div class="flex items-center space-x-5">
                     <button id="theme-toggle-button" class="text-brand-dark dark:text-brand-light w-6 h-6 flex items-center justify-center text-xl">
+                        <span class="sr-only">Theme</span>
                         <i class="fas fa-sun sun-icon"></i>
                         <i class="fas fa-moon moon-icon hidden"></i>
                     </button>
                     <button id="search-button" class="text-brand-dark dark:text-brand-light hover:text-gray-900 dark:hover:text-white">
+                        <span class="sr-only">Search</span>
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </button>
                     <button id="cart-button" class="text-brand-dark dark:text-brand-light hover:text-gray-900 dark:hover:text-white relative">
@@ -289,9 +291,11 @@
                         </div>
                         <div class="carousel-buttons absolute inset-0 flex items-center justify-between px-4">
                             <button onclick="prevImage(${product.id})" class="carousel-button text-gray-800 hover:text-black">
+                            <span class="sr-only">Prev Image</span>
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                             <button onclick="nextImage(${product.id})" class="carousel-button text-gray-800 hover:text-black">
+                            <span class="sr-only">Next Image</span>
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
